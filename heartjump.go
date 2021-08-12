@@ -29,6 +29,12 @@ type DBObject struct {
 
 var svc *dynamodb.DynamoDB
 
+var CORS = map[string]string{
+	"Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+	"Access-Control-Allow-Methods": "OPTIONS,POST",
+	"Access-Control-Allow-Origin":  "*",
+}
+
 func init() {
 	sess := session.Must(session.NewSession())
 	svc = dynamodb.New(sess)
@@ -38,6 +44,7 @@ func buildBadRequestError(err string) events.APIGatewayProxyResponse {
 	return events.APIGatewayProxyResponse{
 		StatusCode: 400,
 		Body:       "BadRequest: " + err,
+		Headers:    CORS,
 	}
 }
 
@@ -45,12 +52,15 @@ func buildInternalError(err string) events.APIGatewayProxyResponse {
 	return events.APIGatewayProxyResponse{
 		StatusCode: 500,
 		Body:       "InternalError: " + err,
+		Headers:    CORS,
 	}
 }
 
 func buildOK() events.APIGatewayProxyResponse {
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
+		Body:       "Record Posted",
+		Headers:    CORS,
 	}
 }
 
